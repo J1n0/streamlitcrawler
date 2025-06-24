@@ -1,25 +1,23 @@
-# game_review_sentiment_app.py
 import streamlit as st
 import pandas as pd
 import joblib
+import re
 from google_play_scraper import app, reviews, search
-from konlpy.tag import Okt
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 
-# 형태소 분석기 정의
-def tokenize(text):
-    okt = Okt()
-    return okt.morphs(text, stem=True)
+# tokenizer 정의 (직렬화된 모델에서 필요)
+def simple_tokenizer(text):
+    return re.findall(r"[가-힣]+", text)
 
-# 모델 불러오기
-clf, vectorizer = joblib.load("okt_vectorizer_model.pkl")
+# 모델 불러오기 (tokenizer 함수가 먼저 정의되어 있어야 함)
+clf, vectorizer = joblib.load("simple_vectorizer_model.pkl")
 
-# Streamlit 페이지 설정
+# Streamlit 기본 설정
 st.set_page_config(page_title="게임 리뷰 감정 분석기", layout="wide")
 st.title("🎮 구글 플레이 게임 리뷰 감정 분석기")
 
-# 검색어로 앱 리스트 동적 검색
+# 상태 초기화
 if 'selected_app_id' not in st.session_state:
     st.session_state.selected_app_id = None
 if 'selected_game' not in st.session_state:
@@ -27,20 +25,17 @@ if 'selected_game' not in st.session_state:
 if 'df' not in st.session_state:
     st.session_state.df = None
 if 'checkbox_state' not in st.session_state:
-    st.session_state.checkbox_state = {
-        'pie': False,
-        'bar': False
-    }
+    st.session_state.checkbox_state = {'pie': False, 'bar': False}
 
-# 검색 입력
-game_query = st.text_input("게임 이름을 입력하세요")
-
+# 검색 입력창
+game_query = st.text_input("게임 이름을 입력하세요", "배틀")
 app_options = []
 app_ids = {}
 
+# 동적 검색
 if game_query:
     results = search(game_query, lang='ko', country='kr')
-    for result in results[:30]:
+    for result in results[:10]:
         name = result['title']
         app_id = result['appId']
         app_options.append(name)
@@ -51,27 +46,23 @@ selected_app_id = app_ids.get(selected_game)
 st.session_state.selected_game = selected_game
 st.session_state.selected_app_id = selected_app_id
 
-# 감정 분석 함수
+# 감정 예측 함수
 def predict_sentiment(texts):
     if len(texts) == 0:
         return []
     X = vectorizer.transform(texts)
     return clf.predict(X)
 
-# 리뷰 수집 함수
+# 리뷰 크롤링 함수
 def crawl_reviews(app_id, max_count=200):
     try:
-        result, _ = reviews(
-            app_id,
-            lang='ko',
-            country='kr',
-            count=max_count
-        )
-        return [r['content'] for r in result if r['content'].strip() != '']
+        result, _ = reviews(app_id, lang='ko', country='kr', count=max_count)
+        return [r['content'] for r in result if r['content'].strip()]
     except Exception as e:
         st.error(f"리뷰 수집 실패: {e}")
         return []
 
+# 리뷰 수집 및 감정 분석 실행
 if selected_app_id and st.button("리뷰 수집 및 감정 분석"):
     with st.spinner("리뷰 수집 중..."):
         reviews_list = crawl_reviews(selected_app_id)
@@ -80,14 +71,13 @@ if selected_app_id and st.button("리뷰 수집 및 감정 분석"):
         st.warning("리뷰를 수집하지 못했습니다.")
     else:
         st.success(f"{len(reviews_list)}개의 리뷰 수집 완료")
-
         df = pd.DataFrame({"리뷰": reviews_list})
         df['감정'] = predict_sentiment(df['리뷰'])
         df['감정'] = df['감정'].map({1: '긍정', 0: '중립', -1: '부정'})
         st.session_state.df = df
         st.dataframe(df)
 
-# 감정 분석 시각화 (세션에서 유지)
+# 감정 시각화 및 CSV 다운로드
 df = st.session_state.df
 if df is not None:
     pie_checked = st.checkbox("감정 분석 비율 보기", value=st.session_state.checkbox_state['pie'])
@@ -110,21 +100,10 @@ if df is not None:
         ax2.set_title(f"'{st.session_state.selected_game}' 감정 분석 결과")
         st.pyplot(fig2)
 
-    # 감정별 리뷰 필터링
-    st.subheader("감정별 리뷰 필터")
-    sentiment_filter = st.radio("감정 선택", options=['전체', '긍정', '중립', '부정'], horizontal=True)
-    if sentiment_filter != '전체':
-        filtered_df = df[df['감정'] == sentiment_filter]
-    else:
-        filtered_df = df
-
-    st.dataframe(filtered_df)
-
-    # 다운로드 버튼
-    csv = filtered_df.to_csv(index=False).encode('utf-8-sig')
+    st.markdown("---")
     st.download_button(
-        label="📥 필터링된 리뷰 CSV 다운로드",
-        data=csv,
-        file_name=f"{st.session_state.selected_game}_{sentiment_filter}_리뷰.csv",
+        label="📥 감정 분석 결과 CSV 다운로드",
+        data=df.to_csv(index=False).encode('utf-8-sig'),
+        file_name=f"{st.session_state.selected_game}_감정분석결과.csv",
         mime='text/csv'
     )
