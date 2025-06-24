@@ -18,7 +18,7 @@ clf, vectorizer = joblib.load("simple_vectorizer_model.pkl")
 
 # Streamlit 페이지 설정
 st.set_page_config(page_title="게임 리뷰 감정 분석기", layout="wide")
-st.title("🎮 구글 플레이 게임 리뷰 감정 분석기")
+st.title("구글 플레이 게임 리뷰 감정 분석기")
 
 # 세션 상태 초기화
 if 'selected_app_id' not in st.session_state:
