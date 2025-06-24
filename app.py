@@ -15,6 +15,7 @@ if os.path.exists(font_path):
     fontprop = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = fontprop.get_name()
 else:
+    fontprop = None  # fallback 처리
     plt.rcParams['font.family'] = 'DejaVu Sans'
 plt.rcParams['axes.unicode_minus'] = False
 
@@ -106,9 +107,16 @@ if df is not None:
 
     if pie_checked:
         fig, ax = plt.subplots()
-        df['감정'].value_counts().plot.pie(autopct='%1.1f%%', startangle=90, ax=ax, labels=df['감정'].value_counts().index, textprops={'fontsize': 14})
+        counts = df['감정'].value_counts()
+        counts.plot.pie(
+            autopct='%1.1f%%',
+            startangle=90,
+            ax=ax,
+            labels=counts.index,
+            textprops={'fontsize': 14, 'fontproperties': fontprop} if fontprop else {'fontsize': 14}
+        )
         ax.set_ylabel('')
-        ax.set_title(f"'{st.session_state.selected_game}' 감정 비율")
+        ax.set_title(f"'{st.session_state.selected_game}' 감정 비율", fontproperties=fontprop if fontprop else None)
         st.pyplot(fig)
 
     bar_checked = st.checkbox("감정 분석 막대 그래프 보기", value=st.session_state.checkbox_state['bar'])
@@ -116,9 +124,13 @@ if df is not None:
 
     if bar_checked:
         fig2, ax2 = plt.subplots()
-        df['감정'].value_counts().plot.bar(color=['red', 'gray', 'green'], ax=ax2)
-        ax2.set_ylabel('리뷰 수')
-        ax2.set_title(f"'{st.session_state.selected_game}' 감정 분석 결과")
+        counts = df['감정'].value_counts()
+        counts.plot.bar(color=['red', 'gray', 'green'], ax=ax2)
+        ax2.set_ylabel('리뷰 수', fontproperties=fontprop if fontprop else None)
+        ax2.set_title(f"'{st.session_state.selected_game}' 감정 분석 결과", fontproperties=fontprop if fontprop else None)
+        for label in ax2.get_xticklabels():
+            if fontprop:
+                label.set_fontproperties(fontprop)
         st.pyplot(fig2)
 
     # 감정별 리뷰 수 요약 테이블 추가
