@@ -5,12 +5,18 @@ import re
 from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
 
+# 스트림릿 클라우드용 폰트 설정 (NanumGothic 존재하는 경우만)
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+if os.path.exists(font_path):
+    fontprop = fm.FontProperties(fname=font_path)
+    plt.rcParams['font.family'] = fontprop.get_name()
+else:
+    plt.rcParams['font.family'] = 'DejaVu Sans'  # 기본 폰트 fallback
 
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf" 
-fontprop = fm.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = fontprop.get_name()
-plt.rcParams['axes.unicode_minus'] = False 
+plt.rcParams['axes.unicode_minus'] = False  # 마이너스 깨짐 방지
 
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
