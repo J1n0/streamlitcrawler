@@ -3,14 +3,14 @@ import streamlit as st
 import pandas as pd
 import joblib
 import re
-import os
 from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
-import matplotlib.font_manager as fm
 
 import matplotlib.pyplot as plt
 plt.rcParams['font.family'] ='Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] =False
+
+
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
     return re.findall(r"[가-힣]+", text)
@@ -105,10 +105,10 @@ if df is not None:
             startangle=90,
             ax=ax,
             labels=counts.index,
-            
+            textprops={'fontsize': 14}
         )
         ax.set_ylabel('')
-        ax.set_title(f"'{st.session_state.selected_game}' 감정 비율", fontproperties=fontprop if fontprop else None)
+        ax.set_title(f"'{st.session_state.selected_game}' 감정 비율")
         st.pyplot(fig)
 
     bar_checked = st.checkbox("감정 분석 막대 그래프 보기", value=st.session_state.checkbox_state['bar'])
@@ -118,11 +118,8 @@ if df is not None:
         fig2, ax2 = plt.subplots()
         counts = df['감정'].value_counts()
         counts.plot.bar(color=['red', 'gray', 'green'], ax=ax2)
-        ax2.set_ylabel('리뷰 수', fontproperties=fontprop if fontprop else None)
-        ax2.set_title(f"'{st.session_state.selected_game}' 감정 분석 결과", fontproperties=fontprop if fontprop else None)
-        for label in ax2.get_xticklabels():
-            if fontprop:
-                label.set_fontproperties(fontprop)
+        ax2.set_ylabel('리뷰 수')
+        ax2.set_title(f"'{st.session_state.selected_game}' 감정 분석 결과")
         st.pyplot(fig2)
 
     # 감정별 리뷰 수 요약 테이블 추가
