@@ -105,7 +105,7 @@ if df is not None:
             startangle=90,
             ax=ax,
             labels=counts.index,
-            textprops={'fontsize': 14, 'fontproperties': fontprop} if fontprop else {'fontsize': 14}
+            
         )
         ax.set_ylabel('')
         ax.set_title(f"'{st.session_state.selected_game}' 감정 비율", fontproperties=fontprop if fontprop else None)
