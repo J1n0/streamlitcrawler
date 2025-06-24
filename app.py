@@ -7,7 +7,7 @@ from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import matplotlib.pyplot as plt
-plt.rc('font', family='NanumGothic')
+plt.rcParam('font', family='NanumGothic')
 
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
