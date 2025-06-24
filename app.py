@@ -41,7 +41,7 @@ app_ids = {}
 
 if game_query:
     results = search(game_query, lang='ko', country='kr')
-    for result in results[:10]:
+    for result in results[:30]:
         name = result['title']
         app_id = result['appId']
         app_options.append(name)
