@@ -6,19 +6,11 @@ import re
 import os
 from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
-import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 
-# 한글 폰트 설정 (Streamlit Cloud용)
-font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
-if os.path.exists(font_path):
-    fontprop = fm.FontProperties(fname=font_path)
-    plt.rcParams['font.family'] = fontprop.get_name()
-else:
-    fontprop = None  # fallback 처리
-    plt.rcParams['font.family'] = 'DejaVu Sans'
-plt.rcParams['axes.unicode_minus'] = False
-
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] ='Malgun Gothic'
+plt.rcParams['axes.unicode_minus'] =False
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
     return re.findall(r"[가-힣]+", text)
