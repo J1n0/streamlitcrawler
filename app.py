@@ -1,22 +1,22 @@
+# game_review_sentiment_app.py
 import streamlit as st
 import pandas as pd
 import joblib
 import re
+import os
 from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
-import os
 
-# 스트림릿 클라우드용 폰트 설정 (NanumGothic 존재하는 경우만)
+# 한글 폰트 설정 (Streamlit Cloud용)
 font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
 if os.path.exists(font_path):
     fontprop = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = fontprop.get_name()
 else:
-    plt.rcParams['font.family'] = 'DejaVu Sans'  # 기본 폰트 fallback
-
-plt.rcParams['axes.unicode_minus'] = False  # 마이너스 깨짐 방지
+    plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['axes.unicode_minus'] = False
 
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
@@ -29,7 +29,7 @@ clf, vectorizer = joblib.load("simple_vectorizer_model.pkl")
 st.set_page_config(page_title="게임 리뷰 감정 분석기", layout="wide")
 st.title("🎮 구글 플레이 게임 리뷰 감정 분석기")
 
-# 검색어로 앱 리스트 동적 검색
+# 세션 상태 초기화
 if 'selected_app_id' not in st.session_state:
     st.session_state.selected_app_id = None
 if 'selected_game' not in st.session_state:
@@ -82,6 +82,7 @@ def crawl_reviews(app_id, max_count=200):
         st.error(f"리뷰 수집 실패: {e}")
         return []
 
+# 리뷰 수집 및 분석 버튼
 if selected_app_id and st.button("리뷰 수집 및 감정 분석"):
     with st.spinner("리뷰 수집 중..."):
         reviews_list = crawl_reviews(selected_app_id)
