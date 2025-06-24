@@ -6,8 +6,11 @@ from google_play_scraper import app, reviews, search
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 
-plt.rcParams['font.family'] ='Malgun Gothic'
-plt.rcParams['axes.unicode_minus'] =False
+
+font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf" 
+fontprop = fm.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = fontprop.get_name()
+plt.rcParams['axes.unicode_minus'] = False 
 
 # tokenizer 정의 (직렬화된 모델에서 필요)
 def simple_tokenizer(text):
