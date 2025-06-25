@@ -34,7 +34,7 @@ if 'checkbox_state' not in st.session_state:
     }
 
 # 검색 입력
-game_query = st.text_input("게임 이름을 입력하세요", "배틀")
+game_query = st.text_input("게임 이름을 입력하세요")
 
 app_options = []
 app_ids = {}
