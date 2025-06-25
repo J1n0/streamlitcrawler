@@ -6,11 +6,12 @@
 
 # 프로젝트 구조
 주요 기능
-검색한 게임 리뷰 수집
-
-감정 분석 결과 시각화
-
-분석된 리뷰 CSV 다운로드 제공
+#검색한 게임 리뷰 수집
+![Image](https://github.com/user-attachments/assets/4002cc3e-02a3-460f-9cc7-d15523ebba4f)
+#감정 분석 결과 시각화
+![Image](https://github.com/user-attachments/assets/6e54e97d-986c-4c9a-8388-e1acd70d9c1b)
+#분석된 리뷰 CSV 다운로드 제공
+![Image](https://github.com/user-attachments/assets/4aa3629b-ce46-4bad-8b8a-c538211c918a)
 
 # 필수 패키지 requirements.txt
 pip install streamlit, pandas, scikit-learn, matplotlib, joblib, google-play-scraper
