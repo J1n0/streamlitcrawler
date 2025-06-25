@@ -14,9 +14,29 @@ Streamlit 기반 웹 인터페이스
 # 필수 패키지 requirements.txt
 pip install streamlit, pandas, scikit-learn, matplotlib, joblib, google-play-scraper
 
-![Image](https://github.com/user-attachments/assets/f86d334f-ba64-4a38-8104-502a60c03d22)
-![Image](https://github.com/user-attachments/assets/4085a5bd-0ad1-48ab-9567-6ce00e8dd76b)
-![Image](https://github.com/user-attachments/assets/2ea78246-0404-42aa-bb4d-41fb5d52d000)
-![Image](https://github.com/user-attachments/assets/c86c905a-8fcd-43f3-8c8b-5033d31ebfe7)
-![Image](https://github.com/user-attachments/assets/44f9ee29-fc89-4953-839c-90533b5c5f52)
+#실행 방법
+wlemail0095.streamlit.app
+
+# 데이터 수집
+
+사용 API: google-play-scraper
+수집 대상: 게임 앱 리뷰 (한글 기준)
+데이터 종류: 게임이름, 리뷰 본문
+수집량: 310,897개
+
+# 라벨링 과정
+사용 도구: gemma-lmstudio
+감정 라벨: 긍정(1), 중립(0), 부정(-1)
+사전 가공된 CSV 기준으로 학습 진행
+
+# 모델 종류 및 학습 과정
+모델: Logistic Regression + TF-IDF Vectorizer
+정규표현식 기반 한글 토큰 추출 → Tokenizer: Okt 미사용
+저장:simple_vectorizer_model.pkl
+하이퍼 파라미터값
+TfidfVectorizer(max_features=5000)
+LogisticRegression(max_iter=300)
+test_size = 0.2
+random_state = 42
+
 
