@@ -1,4 +1,9 @@
-# streamlitcrawler
+# 구글 플레이 게임 리뷰 감정 분석기
+
+# 프로젝트 배경
+
+구글 플레이 스토어의 게임 리뷰를 수집하고, 감정 분석 모델을 통해 리뷰를 긍정, 부정, 중립으로 자동 분류하는 웹 애플리케이션을 구축하였습니다.
+
 
 ![Image](https://github.com/user-attachments/assets/f86d334f-ba64-4a38-8104-502a60c03d22)
 ![Image](https://github.com/user-attachments/assets/4085a5bd-0ad1-48ab-9567-6ce00e8dd76b)
