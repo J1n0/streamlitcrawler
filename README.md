@@ -6,9 +6,10 @@
 
 # 프로젝트 구조
 주요 기능
-Streamlit 기반 웹 인터페이스
-실시간 게임 리뷰 수집
+검색한 게임 리뷰 수집
+
 감정 분석 결과 시각화
+
 분석된 리뷰 CSV 다운로드 제공
 
 # 필수 패키지 requirements.txt
@@ -38,5 +39,12 @@ TfidfVectorizer(max_features=5000)
 LogisticRegression(max_iter=300)
 test_size = 0.2
 random_state = 42
+
+# 모델 성능
+![Image](https://github.com/user-attachments/assets/0d94f884-8058-4287-aca1-800168ad4c34)
+
+# 향후 개선 사항
+
+
 
 
